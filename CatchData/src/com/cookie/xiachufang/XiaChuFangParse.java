@@ -13,21 +13,43 @@ import org.jsoup.nodes.Element;
 
 public class XiaChuFangParse {
 	public static final String url = "http://www.xiachufang.com";
-	public static final int nThreadCount = 10;
+	public static final int nThreadCount = 20;
 	public static final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreadCount);
 	
-	public void simpleParse() throws IOException{
-		Document doc = Jsoup.connect(String.format("%s/category/%s/", url, FoodStyle.XIAOQINGXIN)).get();
+	public FoodStyle style;
+	public int maxPageNumber;
+	List<XiaChuFang> list;
+	
+	public XiaChuFangParse(){
+		
+	}
+	
+	public XiaChuFangParse(FoodStyle style){
+		this.style = style;
+		maxPageNumber = this.style.getMaxPage();
+		list = new ArrayList<XiaChuFang>();
+	}
+	
+	public void simpleParse(String reqUrl) throws IOException{
+		Document doc = Jsoup.connect(reqUrl).get();
 		Element ul = doc.select("div[class=normal-recipe-list]").first().child(0);
-		List<XiaChuFang> list = new ArrayList<XiaChuFang>();
 		for (int i=0; i<ul.children().size(); i++) {
 			Element li = ul.child(i);
 			Element infoDiv = li.select("div[class=info pure-u]").first();
 			Element href = infoDiv.select("a").first();
 			String infoUrl = String.format("%s%s", url, href.attr("href"));
-			XiaChuFang xiaChuFang = new XiaChuFang(infoUrl);
+			XiaChuFang xiaChuFang = new XiaChuFang(infoUrl, style);
 			taskExecutor.execute(xiaChuFang);
 			list.add(xiaChuFang);
+		}
+		
+	}
+	
+	public void parse() throws IOException {
+		
+		for (int i=1; i<maxPageNumber; i++) {
+			String reqUrl = String.format("%s/category/%s/?page=%d", url, style, i);
+			simpleParse(reqUrl);
 		}
 		
 		taskExecutor.shutdown();
@@ -38,6 +60,11 @@ public class XiaChuFangParse {
 			  e.printStackTrace();
 			}
 		
+		print();
+	}
+	
+	public void print() {
+		System.out.println(String.format("size:%d", list.size()));
 		for (XiaChuFang model : list) {
 			XiaChuFangModel x = model.model;
 			System.out.println(String.format("name:%s", x.name));
@@ -49,12 +76,6 @@ public class XiaChuFangParse {
 			x.printSteps();
 			System.out.println(String.format("tip:%s\r\n\n", x.tip));
 		}
-		
-	}
-	
-	public static void main(String[] args) throws Exception{
-		XiaChuFangParse x = new XiaChuFangParse();
-		x.simpleParse();
 	}
 	
 }

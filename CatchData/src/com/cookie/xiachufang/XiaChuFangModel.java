@@ -8,4 +8,15 @@ public class XiaChuFangModel extends Model{
 	public float rating;
 	public String author;
 	public String tip;
-}
+	public int id;
+	public XiaChuFangModel() {
+		
+	}
+	
+	public XiaChuFangModel(String url) {
+		if (url == null)
+			return;
+		String []temp = url.split("/");
+		id = Integer.parseInt(temp[temp.length-1]);
+	}
+ }

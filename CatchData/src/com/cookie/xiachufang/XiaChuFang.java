@@ -12,15 +12,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.cookie.model.StepModel;
+import com.cookie.util.LocalUrl;
 
 public class XiaChuFang implements Runnable{
 	public String url;
 	public XiaChuFangModel model;
+	public FoodStyle foodStyle;
 	
-	public XiaChuFang(String url) {
+	public XiaChuFang(String url, FoodStyle foodStyle) {
 		this.url = url;
-		this.model = new XiaChuFangModel();
-		this.model.url = url;
+		this.foodStyle = foodStyle;
+		this.model = new XiaChuFangModel(url);
 	}
 	
 	public void parse() throws IOException{
@@ -40,6 +42,8 @@ public class XiaChuFang implements Runnable{
 			model.steps = parseStep(doc);
 			Elements tipEle = doc.select("div[class=tip]");
 			model.tip = tipEle.size() > 0 ? tipEle.first().text() : null;
+			
+			LocalUrl.netUrlToLoaclUrl(model.topImgUrl, String.format("%d_top_img.jpg", model.id));
 			
 			}catch(Exception e){
 				System.out.println(url);
