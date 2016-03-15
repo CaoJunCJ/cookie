@@ -28,7 +28,7 @@ public class XiaChuFang implements Runnable{
 	public void parse() throws IOException{
 		
 		try{
-			Document doc = Jsoup.connect(url).get();
+			Document doc = Jsoup.connect(url).timeout(1000 * 30).get();
 			Element ele = doc.select("div[class=block block-has-padding white-bg recipe-show]").first();
 			model.name = doc.select("h1[itemprop=name]").first().text();
 			model.topImgUrl = ele.select("img").first().attr("src");
