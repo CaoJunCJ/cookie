@@ -16,6 +16,7 @@ public class XiaChuFangModel extends Model{
 	public XiaChuFangModel(String url) {
 		if (url == null)
 			return;
+		this.url = url;
 		String []temp = url.split("/");
 		id = Integer.parseInt(temp[temp.length-1]);
 	}
