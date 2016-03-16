@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd">
+<Context>
+
+<Resource name="jdbc/CookieDB" auth="Container" type="javax.sql.DataSource"
+		
+		maxActive="100" 
+		maxIdle="30" 
+		maxWait="10000" 
+		username="root" password="cerosoft"
+		driverClassName="com.mysql.jdbc.Driver" 
+		url="jdbc:mysql://localhost:3306"
+		connectionProperties="useUnicode=yes;characterEncoding=utf8;"
+		validationQuery="Select 1" 
+		testWhileIdle="true" 
+		testOnBorrow="false"
+		testOnReturn="false" 
+		validationInterval="30000"
+		timeBetweenEvictionRunsMillis="30000" 
+		minIdle="10" initialSize="10"
+		removeAbandonedTimeout="60" removeAbandoned="true" logAbandoned="true"
+		minEvictableIdleTimeMillis="30000" />
+</Context>
