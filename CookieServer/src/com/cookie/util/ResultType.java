@@ -1,7 +1,7 @@
 package com.cookie.util;
 
 public enum ResultType {
-	TIMEOUT(-1), SUCCESS(0), INTERNAL_ERROR(99);
+	TIMEOUT(-1), SUCCESS(0), ARGUMENT_INVALID_OR_MISS(1), INTERNAL_ERROR(99);
 
 	public int errorCode;
 

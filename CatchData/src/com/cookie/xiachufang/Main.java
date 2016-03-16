@@ -11,7 +11,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		XiaChuFangParse x1 = new XiaChuFangParse(FoodStyle.JIACHANGCAI);
-		XiaChuFangParse x2 = new XiaChuFangParse(FoodStyle.KUAISHOUCAI);
+		XiaChuFangParse x2 = new XiaChuFangParse(FoodStyle.XIAOQINGXIN);
 		try {
 			x1.parse();
 			x2.parse();

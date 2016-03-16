@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.impl.LogFactoryImpl;
-import org.json.JSONObject;
 
+import com.cookie.util.JSONTool;
+import com.cookie.util.ResultType;
 import com.cookie.util.StringUtil;
-import com.google.gson.Gson;
 
 /**
  * Servlet implementation class Recipe
@@ -46,27 +46,33 @@ public class Recipe extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Log log = LogFactoryImpl.getLog(this.getClass());
-		String recipeId = request.getParameter("recipe_id");
-		JSONObject json = new JSONObject();
-		if (StringUtil.isNull(recipeId)) {
-			json.put("result", -3);
-			out.print(json.toString(1));
-			log.debug("agrs miss.");
+		String strRecipeId = request.getParameter("recipe_id");
+		if (StringUtil.isNull(strRecipeId)) {
+			log.debug(String.format("[%s] %s", "recipe_id", ResultType.ARGUMENT_INVALID_OR_MISS.toString()));
+			out.print(JSONTool.getErrorResult(ResultType.ARGUMENT_INVALID_OR_MISS));
 			return;
 		}
 		
+		int recipeId;
 		
-		com.cookie.model.Recipe r = com.cookie.model.Recipe.getRecipeById(Integer.parseInt(recipeId));
+		try{
+			recipeId = Integer.parseInt(strRecipeId);
+		}catch(Exception e){
+			log.debug(String.format("[%s] %s", "recipe_id", ResultType.ARGUMENT_INVALID_OR_MISS.toString()));
+			out.print(JSONTool.getErrorResult(ResultType.ARGUMENT_INVALID_OR_MISS));
+			return;
+		}
 		
-		json.put("result", "0");
-		Gson gson = new Gson();
-
-		JSONObject recipeJson = new JSONObject(gson.toJson(r));
+		com.cookie.model.Recipe r = com.cookie.model.Recipe.getRecipeById(recipeId);
 		
-		json.put("recipe", recipeJson);
-		out.print(json.toString(1));
-		log.debug(recipeJson);
-		System.out.println(new JSONObject(recipeJson).toString(1));
+		if (r == null) {
+			log.debug("com.cookie.model.Recipe is null");
+			out.print(JSONTool.getErrorResult(ResultType.INTERNAL_ERROR));
+			return;
+		}
+		
+		String result = JSONTool.getSuccessResult(r);
+		out.print(result);
 		return;
 	}
 
