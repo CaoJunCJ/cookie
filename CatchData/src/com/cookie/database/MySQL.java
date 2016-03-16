@@ -90,6 +90,29 @@ public class MySQL {
 		//System.exit(-1);
 	}
 	
+	public boolean checkHasRecipe(int recipeId) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT recipe_id from  cookiedb.recipe WHERE recipe_id=?";
+		try {
+			conn.setAutoCommit(false);
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, recipeId);
+			rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				return true;
+			}
+			
+			conn.commit();
+		} catch (SQLException ex) {
+			printSQLExcpetion(ex);
+		} finally {
+			closeResourse(stmt, rs);
+		}
+		return false;
+	}
+	
 	public void addRecipe(XiaChuFangModel model) {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

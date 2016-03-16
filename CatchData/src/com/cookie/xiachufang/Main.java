@@ -30,6 +30,8 @@ public class Main {
 		
 		MySQL mysql = new MySQL();
 		for (XiaChuFang x : list) {
+			if (mysql.checkHasRecipe(x.model.id)) 
+				continue;
 			mysql.addRecipe(x.model);
 			mysql.addIngredients(x.model.ingredients, x.model.id);
 			mysql.addSteps(x.model.steps, x.model.id);
