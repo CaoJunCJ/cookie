@@ -6,7 +6,9 @@ import java.util.Map;
 public class Model {
 	public String name;
 	public String topImgUrl;
+	public String localTopImgPath;
 	public String description;
+	public List<Integer> categoryType;
 	public Map<String, String> ingredients;
 	public List<StepModel> steps;
 	
@@ -29,7 +31,7 @@ public class Model {
 		System.out.println("------------------");
 		int index = 1;
 		for (StepModel s : steps) {
-			System.out.println(String.format("%d %s\n[%s]", index, s.description, s.imgUrl));
+			System.out.println(String.format("%d %s\n[%s]\n[%s]", index, s.description, s.imgUrl, s.localImgPath));
 			index++;
 		}
 		System.out.println("------------------\r\n");

@@ -14,7 +14,7 @@ import org.jsoup.nodes.Element;
 public class XiaChuFangParse {
 	public static final String url = "http://www.xiachufang.com";
 	public static final int nThreadCount = 20;
-	public static final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreadCount);
+	public final ExecutorService taskExecutor = Executors.newFixedThreadPool(nThreadCount);
 	
 	public FoodStyle style;
 	public int maxPageNumber;
@@ -76,6 +76,7 @@ public class XiaChuFangParse {
 			x.printSteps();
 			System.out.println(String.format("tip:%s\r\n\n", x.tip));
 		}
+		
 	}
 	
 }

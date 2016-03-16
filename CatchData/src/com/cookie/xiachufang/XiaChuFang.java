@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,6 +20,8 @@ public class XiaChuFang implements Runnable{
 	public XiaChuFangModel model;
 	public FoodStyle foodStyle;
 	
+	public static final Map<Integer, String> categoryTypeMap = new ConcurrentHashMap<Integer, String>();
+	
 	public XiaChuFang(String url, FoodStyle foodStyle) {
 		this.url = url;
 		this.foodStyle = foodStyle;
@@ -28,7 +31,7 @@ public class XiaChuFang implements Runnable{
 	public void parse() throws IOException{
 		
 		try{
-			Document doc = Jsoup.connect(url).timeout(1000 * 30).get();
+			Document doc = Jsoup.connect(url).timeout(1000 * 60).get();
 			Element ele = doc.select("div[class=block block-has-padding white-bg recipe-show]").first();
 			model.name = doc.select("h1[itemprop=name]").first().text();
 			model.topImgUrl = ele.select("img").first().attr("src");
@@ -42,14 +45,51 @@ public class XiaChuFang implements Runnable{
 			model.steps = parseStep(doc);
 			Elements tipEle = doc.select("div[class=tip]");
 			model.tip = tipEle.size() > 0 ? tipEle.first().text() : null;
+			model.categoryType = parseCategoryType(doc);
 			
-			LocalUrl.netUrlToLoaclUrl(model.topImgUrl, String.format("%d_top_img.jpg", model.id));
+			model.localTopImgPath = LocalUrl.netUrlToLoaclUrl(model.topImgUrl, String.format("%d_top_img.jpg", model.id));
+			saveStepsImg(model.steps);
 			
 			}catch(Exception e){
 				System.out.println(url);
 				e.printStackTrace();
 				System.exit(-1);
 			}
+	}
+	
+	public void saveStepsImg(List<StepModel> list) {
+		if (list == null)
+			return;
+		
+		for (int i=0; i<list.size(); i++) {
+			StepModel s = list.get(i);
+			
+			if (!s.hasImg) 
+				continue;
+			
+			s.localImgPath = LocalUrl.netUrlToLoaclUrl(s.imgUrl, String.format("%d_step%d_img.jpg", model.id, i));
+		}
+	}
+	
+	public List<Integer> parseCategoryType(Document doc) {
+		List<Integer> list = new ArrayList<Integer>();
+		Elements categoryTyleEle = doc.select("div[class=recipe-cats]");
+		if (categoryTyleEle.size() == 0)
+			return list;
+		
+		Element listEle = categoryTyleEle.first();
+		for (Element e : listEle.children()) {
+			String temp[] = e.attr("href").split("/");
+			int categoryId = Integer.parseInt(temp[temp.length - 1]);
+			String text = e.text();
+			if (!categoryTypeMap.containsKey(categoryId)) {
+				categoryTypeMap.put(categoryId, text);
+			}
+			
+			list.add(categoryId);
+		}
+		
+		return list;
 	}
 	
 	public Map<String, String> parseIngredients(Document doc){

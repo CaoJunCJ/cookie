@@ -22,42 +22,42 @@ public enum FoodStyle {
 	}
 
 	public int getMaxPage() {
-		int maxPageNumber = 5;
+		int maxPageNumber = 3;
 		switch (this) {
 		case JIACHANGCAI:
-			maxPageNumber = 2;
+			maxPageNumber = 3;
 			break;
 			
 		case KUAISHOUCAI:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		case XIAFANCAI:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		case SUCAI:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		case DAYUDAROU:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		case XIAJIUCAI:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		case XIAOQINGXIN:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		case CHUANGYICAI:
-			maxPageNumber = 20;
+			maxPageNumber = 3;
 			break;
 			
 		default:
-			maxPageNumber = 5;
+			maxPageNumber = 3;
 			break;
 		}
 

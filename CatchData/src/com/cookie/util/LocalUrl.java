@@ -19,10 +19,12 @@ public class LocalUrl {
 
 	public static final ExecutorService taskExecutor = Executors
 			.newFixedThreadPool(5);
+	
+	public static final String IMG_SAVE_PATH = "e:/image/";
 
 	public static String netUrlToLoaclUrl(String url, String fileName) {
 		taskExecutor.execute(new DownloadTask(url, fileName));
-		return url;
+		return String.format("%s%s", LocalUrl.IMG_SAVE_PATH, fileName);
 	}
 
 	public static void waitDownloadTaskFinish() {
@@ -70,7 +72,7 @@ class DownloadTask implements Runnable {
 			response1 = httpclient.execute(httpGet);
 			HttpEntity entity1 = response1.getEntity();
 			InputStream is = entity1.getContent();
-			String filePath = String.format("e:/image/%s", fileName);
+			String filePath = String.format("%s%s", LocalUrl.IMG_SAVE_PATH, fileName);
 			FileOutputStream fos = new FileOutputStream(new File(filePath));
 			int inByte;
 			while ((inByte = is.read()) != -1)
