@@ -18,6 +18,7 @@ public class MySQLDataBase {
 	static String queryRecipeById = "SELECT * FROM cookiedb.recipe WHERE recipe_id=?";
 	static String queryStepsByRecipeId = "SELECT * FROM cookiedb.steps WHERE recipe_id=? ORDER BY `index`";
 	static String queryIngredientsByRecipeId = "SELECT * FROM cookiedb.ingredients WHERE recipe_id=? ORDER BY `index`";
+	static String queryRandomPecipes = "SELECT recipe_id FROM cookiedb.recipe ORDER BY RAND() LIMIT ?";
 	
 	public static Recipe getRecipeById(int id) throws Exception  {
 		Connection con = null;
@@ -98,6 +99,28 @@ public class MySQLDataBase {
 	        	s.id = rs.getInt("ingredients_id");
 	        	s.recipeId = id;
 	        	list.add(s);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		} finally {
+			closeResourse(ps, rs, con);
+		}
+		return list;
+	}
+	
+	public static List<Integer> randomRecipes(int size) throws Exception {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Integer> list = new ArrayList<Integer>();
+		try {
+			con = DBUtil.getInstance().getConnection();
+			ps = con.prepareStatement(queryRandomPecipes);
+			ps.setInt(1, size);
+			rs = ps.executeQuery();
+	        while(rs.next()){
+	        	list.add(rs.getInt("recipe_id"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

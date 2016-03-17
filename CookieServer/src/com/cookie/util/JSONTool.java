@@ -1,5 +1,8 @@
 package com.cookie.util;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -22,9 +25,19 @@ public class JSONTool {
 		return json.toString(1);
 	}
 	
+	public static String getSuccessResult(String key, JSONArray value) {
+		JSONObject json = new JSONObject();
+		json.put(RESULT_KEY, 0);
+		json.put(key, value);
+		return json.toString(1);
+	}
+	
 	public static String getSuccessResult(String key, Object o) {
-		JSONObject json = new JSONObject(new Gson().toJson(o));
-		return getSuccessResult(key, json);
+		if ( o instanceof List) {
+			return getSuccessResult(key, new JSONArray(new Gson().toJson(o)));
+		} else {
+			return getSuccessResult(key, new JSONObject(new Gson().toJson(o)));
+		}
 	}
 	
 	public static String getSuccessResult(Object o) {

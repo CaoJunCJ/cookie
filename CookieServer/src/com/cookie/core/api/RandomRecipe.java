@@ -12,21 +12,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.impl.LogFactoryImpl;
 
+import com.cookie.dbcp.MySQLDataBase;
 import com.cookie.util.JSONTool;
 import com.cookie.util.ResultType;
-import com.cookie.util.StringUtil;
 
 /**
- * Servlet implementation class Recipe
+ * Servlet implementation class RandomRecipe
  */
-@WebServlet("/v1/Recipe")
-public class Recipe extends HttpServlet {
+@WebServlet("/v1/RandomRecipe")
+public class RandomRecipe extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Recipe() {
+    public RandomRecipe() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -44,34 +44,13 @@ public class Recipe extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		Log log = LogFactoryImpl.getLog(this.getClass());
-		String strRecipeId = request.getParameter("recipe_id");
-		if (StringUtil.isNull(strRecipeId)) {
-			log.debug(String.format("[%s] %s", "recipe_id", ResultType.ARGUMENT_INVALID_OR_MISS.toString()));
-			out.print(JSONTool.getErrorResult(ResultType.ARGUMENT_INVALID_OR_MISS));
-			return;
-		}
-		
-		int recipeId;
-		
-		try{
-			recipeId = Integer.parseInt(strRecipeId);
-		}catch(Exception e){
-			log.debug(String.format("[%s] %s", "recipe_id", ResultType.ARGUMENT_INVALID_OR_MISS.toString()));
-			out.print(JSONTool.getErrorResult(ResultType.ARGUMENT_INVALID_OR_MISS));
-			return;
-		}
-		
-		com.cookie.model.Recipe r = com.cookie.model.Recipe.getRecipeById(recipeId);
-		
-		if (r == null) {
-			log.debug("com.cookie.model.Recipe is null");
+		try {
+			out.print(JSONTool.getSuccessResult("data", MySQLDataBase.randomRecipes(10)));
+		}catch(Exception e) {
+			e.printStackTrace();
+			log.debug("the result is error.");
 			out.print(JSONTool.getErrorResult(ResultType.INTERNAL_ERROR));
-			return;
 		}
-		
-		String result = JSONTool.getSuccessResult(r);
-		out.print(result);
-		return;
 	}
 
 }
